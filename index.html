@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Apology</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Use Inter font -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Bebas+Neue&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fce7f3; /* Very light pink background */
+            min-height: 100vh;
+        }
+        .kitty-shadow {
+            box-shadow: 0 10px 15px -3px rgba(251, 113, 133, 0.5), 0 4px 6px -2px rgba(251, 113, 133, 0.1);
+        }
+        .kitty-button {
+            transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+        }
+        .kitty-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 10px -5px rgba(251, 113, 133, 0.7);
+        }
+        .kitty-button:active {
+            transform: translateY(0);
+            box-shadow: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Application Container -->
+    <div id="app" class="flex flex-col items-center justify-start py-8 px-4 min-h-screen">
+        <h1 class="text-4xl font-extrabold text-pink-700 mb-8 tracking-wider">
+            <span class="text-5xl">🐾</span> A Note Just for You <span class="text-5xl">💖</span>
+        </h1>
+
+        <!-- Content rendering based on current state -->
+        <div id="content-container" class="w-full max-w-4xl bg-white p-6 md:p-10 rounded-3xl border-4 border-pink-300 kitty-shadow">
+            <!-- Content will be rendered here by JavaScript -->
+        </div>
+
+    </div>
+
+    <!-- Custom Modal/Popup Container -->
+    <div id="modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 p-4" onclick="closeModal()">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl border-4 border-pink-400 max-w-md w-full" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-title" class="text-2xl font-bold text-pink-600"></h3>
+                <button onclick="closeModal()" class="text-pink-400 hover:text-pink-600 text-3xl font-light leading-none">&times;</button>
+            </div>
+            <p id="modal-message" class="text-gray-700 mb-6"></p>
+            <div id="modal-actions" class="flex justify-end space-x-4">
+                <!-- Buttons will be injected here -->
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Global State and Logic ---
+
+        let state = {
+            view: 'home', // 'home', 'letter', 'venue'
+            denialCount: 0,
+            maxDenials: 3
+        };
+
+        const contentContainer = document.getElementById('content-container');
+        const modalElement = document.getElementById('modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalMessage = document.getElementById('modal-message');
+        const modalActions = document.getElementById('modal-actions');
+
+        // Apology Letter Content
+        const sorryLetter = `
+            <p class="text-lg mb-6 text-gray-700 leading-relaxed italic">
+                Dearest Friend,
+            </p>
+            <p class="mb-4">
+                I know words can't fully capture how much I regret what happened, but I hope this letter helps you see how truly sorry I am.
+                I value our friendship more than anything, and the thought of having hurt you has been weighing heavily on my heart.
+            </p>
+            <!-- LEAVE SPACE FOR LETTER CONTENT -->
+            <p class="mb-4 text-center text-pink-500 font-semibold text-xl border-b-2 border-pink-200 pb-2">
+                
+            </p>
+            <p class="mb-4">
+                I have thought a lot about everything, and I take full responsibility. You deserve to be treated with kindness and respect, and I failed to do that.
+            </p>
+            <p class="mb-4">
+                I truly hope we can move past this. I miss you and I cherish every moment we spend together.
+            </p>
+            <p class="text-right mt-8 font-bold text-pink-700">
+                With deepest regrets and endless hope,<br>
+                Your Friend (Mohammad Arham)
+            </p>
+        `;
+
+        // Utility to show the custom modal
+        function showModal(title, message, buttons) {
+            modalTitle.textContent = title;
+            modalMessage.innerHTML = message;
+            modalActions.innerHTML = ''; // Clear previous buttons
+
+            buttons.forEach(btn => {
+                const buttonElement = document.createElement('button');
+                buttonElement.className = `kitty-button px-4 py-2 font-semibold rounded-lg ${btn.className || 'bg-pink-400 hover:bg-pink-500 text-white'}`;
+                buttonElement.textContent = btn.text;
+                buttonElement.onclick = () => {
+                    closeModal();
+                    if (btn.action) btn.action();
+                };
+                modalActions.appendChild(buttonElement);
+            });
+
+            modalElement.classList.remove('hidden');
+        }
+
+        // Utility to close the custom modal
+        function closeModal() {
+            modalElement.classList.add('hidden');
+        }
+
+        // --- View Rendering Functions ---
+        const images = [
+  '/WhatsApp Image 2025-11-24 at 11.59.29 PM (1).jpeg',
+  '/WhatsApp Image 2025-11-24 at 11.59.29 PM.jpeg',
+  '/WhatsApp Image 2025-11-24 at 11.59.29 PM (3).jpeg',
+  '/WhatsApp Image 2025-11-24 at 11.59.29 PM (4).jpeg'
+];
+        function renderHomeView() {
+            contentContainer.innerHTML = `
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-pink-600 mb-6">Welcome to Your Special Page</h2>
+
+                    <!-- Photo Gallery (Placeholders) -->
+                          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10">
+        ${images.map((src, i) => `
+          <div class="p-2 border-2 border-pink-300 rounded-xl bg-pink-50">
+            <img src="${src}"
+                 alt="aur photos nhi hai:)"
+                 class="w-full h-auto rounded-lg object-cover border border-pink-200 transform hover:scale-105 transition duration-300">
+            <p class="text-sm mt-1 text-pink-600 font-medium">Sweet Memory</p>
+          </div>
+        `).join('')}
+      </div>
+
+                    <!-- Mail Icon/Button -->
+                    <div class="flex justify-center my-10">
+                        <button id="open-letter-btn" class="kitty-button flex items-center space-x-3 px-8 py-4 bg-pink-500 text-white font-extrabold text-xl rounded-full shadow-lg hover:bg-pink-600 transition duration-300">
+                            <!-- Kitty/Envelope Icon -->
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-2 10a2 2 0 01-2 2H7a2 2 0 01-2-2V8a2 2 0 012-2h10a2 2 0 012 2v10z"></path>
+                            </svg>
+                            <span>Click to Open Letter</span>
+                        </button>
+                    </div>
+
+                    <p class="mt-4 text-gray-500 text-sm">Tap the envelope to reveal a message.</p>
+                </div>
+            `;
+            document.getElementById('open-letter-btn').onclick = () => {
+                state.view = 'letter';
+                renderApp();
+            };
+        }
+
+        function renderLetterView() {
+            contentContainer.innerHTML = `
+                <div class="text-center mb-6">
+                    <h2 class="text-4xl font-bold text-pink-700 mb-2">The Apology</h2>
+                    <p class="text-pink-500 italic">Please read this with an open heart.</p>
+                </div>
+                <div class="text-left bg-pink-50 p-6 rounded-xl border border-pink-200">
+                    ${sorryLetter}
+                </div>
+                <div class="flex justify-center mt-8">
+                    <button id="read-confirm-btn" class="kitty-button px-8 py-3 bg-fuchsia-400 text-white font-bold text-lg rounded-full shadow-md hover:bg-fuchsia-500 transition duration-300">
+                        Have you read? Click OK
+                    </button>
+                </div>
+            `;
+            document.getElementById('read-confirm-btn').onclick = () => {
+                showAcceptancePrompt();
+            };
+        }
+
+        function renderVenueView() {
+            contentContainer.innerHTML = `
+                <div class="text-center p-6 bg-green-50 rounded-xl border-4 border-green-300">
+                    <h2 class="text-5xl font-extrabold text-green-700 mb-4">YES! 🎉 Apology Accepted!</h2>
+                    <p class="text-2xl text-green-600 mb-8">Let's celebrate our friendship!</p>
+
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <!-- Venue Details -->
+                        <div class="text-left space-y-4">
+                            <div class="bg-white p-4 rounded-xl shadow-lg border-l-4 border-green-500">
+                                <p class="text-sm font-semibold text-gray-500">Venue</p>
+                                <p class="text-2xl font-bold text-green-800">CSB</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-lg border-l-4 border-green-500">
+                                <p class="text-sm font-semibold text-gray-500">Date</p>
+                                <p class="text-2xl font-bold text-green-800">November 25</p>
+                            </div>
+                            <div class="bg-white p-4 rounded-xl shadow-lg border-l-4 border-green-500">
+                                <p class="text-sm font-semibold text-gray-500">Time</p>
+                                <p class="text-2xl font-bold text-green-800">3:00 PM </p>
+                            </div>
+                        </div>
+
+                        <!-- Venue Picture Placeholder -->
+                        <div class="rounded-2xl overflow-hidden border-4 border-green-400 shadow-xl">
+                            <img src="/WhatsApp Image 2025-11-25 at 12.05.23 AM.jpeg"
+                                 onerror="this.src='https://placehold.co/400x300/a7f3d0/065f46?text=Venue+Picture'"
+                                 alt="Venue Placeholder"
+                                 class="w-full h-auto object-cover">
+                        </div>
+                    </div>
+
+                    <p class="mt-8 text-lg font-semibold text-gray-700">Can't wait to see you there! 💖</p>
+                </div>
+            `;
+        }
+
+
+        // --- Interaction Flow Functions ---
+
+        function showAcceptancePrompt() {
+            showModal(
+                "Acceptance Check",
+                "Will you accept my apology? <span class='text-3xl'>😊</span>",
+                [
+                    { text: "No", className: "bg-red-400 hover:bg-red-500 text-white", action: handleDenial },
+                    { text: "Yes", className: "bg-green-400 hover:bg-green-500 text-white", action: handleAcceptance }
+                ]
+            );
+        }
+
+        function handleAcceptance() {
+            state.view = 'venue';
+            renderApp();
+        }
+
+        function handleDenial() {
+            state.denialCount++;
+
+            if (state.denialCount >= state.maxDenials) {
+                // If denied 3 or more times, go back to the sorry page
+                state.denialCount = 0; // Reset count for next try
+                state.view = 'home';
+                renderApp();
+
+                showModal(
+                    "Try Again!",
+                    `You've said 'No' ${state.maxDenials} times! I'm sorry, let's start over. Please look at the photos and the letter again. 😥`,
+                    [{ text: "Okay", action: null }]
+                );
+
+            } else {
+                // Denied less than 3 times
+                showModal(
+                    "Please Do!",
+                    `Please reconsider! I'm truly sorry. You have ${state.maxDenials - state.denialCount} attempt(s) left.`,
+                    [{ text: "OK, I'll think", action: () => showAcceptancePrompt() }] // Leads back to the main question
+                );
+            }
+        }
+
+
+        // Main render function
+        function renderApp() {
+            if (state.view === 'home') {
+                renderHomeView();
+            } else if (state.view === 'letter') {
+                renderLetterView();
+            } else if (state.view === 'venue') {
+                renderVenueView();
+            }
+        }
+
+        // Initialize application
+        window.onload = renderApp;
+    </script>
+
+</body>
+</html>
